@@ -1,6 +1,10 @@
 <?php
 
 namespace VladimirH00\SqlDml;
+/** Интерфейс с дополнительными методами для Select запроса
+ * Interface SqlSelectInterface
+ * @package VladimirH00\SqlDml
+ */
 interface SqlSelectInterface
 {
     /**

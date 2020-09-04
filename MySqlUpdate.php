@@ -14,11 +14,25 @@ use VladimirH00\SqlDml\SqlWhereInterface as SqlWhereInterface;
 use VladimirH00\SqlDml\SqlUpdateInterface as SqlUpdateInterface;
 use InvalidArgumentException;
 
+/**
+ * Класс для получения готового Update запроса к Mysql
+ * Class MySqlUpdate
+ * @package VladimirH00\SqlDml
+ */
 class MySqlUpdate implements SqlUpdateInterface, SqlBaseInterface, SqlWhereInterface
 {
     use WhereTrait;
+    /**
+     * @var string - содержит название таблицы
+     */
     private $table;
+    /**
+     * @var string - содержит ограничения по обновлению данных
+     */
     private $where;
+    /**
+     * @var string - содержит строку замены старых данных на новые
+     */
     private $set;
 
     /**

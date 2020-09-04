@@ -11,19 +11,21 @@ use VladimirH00\SqlDml\SqlInsertInterface as SqlInsertInterface;
 
 use InvalidArgumentException;
 
+/**
+ * Классдля сборки и получения Insert заброса к MySql
+ * Class MySqlInsert
+ * @package VladimirH00\SqlDml
+ */
 class MySqlInsert implements SqlBaseInterface, SqlInsertInterface
 {
     /**
-     * @var string
+     * @var string - содерждит название таблицы
      */
     private $table;
     /**
-     * @var string
+     * @var string - содержит данные которые будут добавленны в БД
      */
     private $values;
-    /**
-     * @var string
-     */
 
     /**
      * @inheritDoc

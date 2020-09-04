@@ -19,35 +19,41 @@ use VladimirH00\SqlDml\SqlOffsetableInterface as SqlOffsetableInterface;
 
 use InvalidArgumentException;
 
+
+/**
+ * Класс для получения готового Select запроса к Mysql
+ * Class MySqlSelect
+ * @package VladimirH00\SqlDml
+ */
 class MySqlSelect implements SqlSelectInterface, SqlBaseInterface, SqlWhereInterface, SqlLimitableInterface, SqlOffsetableInterface
 {
     use WhereTrait;
     /**
-     * @var string
+     * @var string содержит поля выборки
      */
     private $select;
     /**
-     * @var int
+     * @var int - содержит количество выводимых данных
      */
     private $limit;
     /**
-     * @var string
+     * @var string - содержит название таблицы
      */
     private $from;
     /**
-     * @var string
+     * @var string - содержит  строку ограничений по выборке данных
      */
     private $where;
     /**
-     * @var int
+     * @var int - содержит сдвиг по выводымим данным
      */
     private $offset;
     /**
-     * @var string
+     * @var string - содержит параметры сордировки запроса
      */
     private $orderBy;
     /**
-     * @var string
+     * @var string - содержит параметры группировки данных запроса
      */
     private $groupBy;
 
@@ -92,6 +98,10 @@ class MySqlSelect implements SqlSelectInterface, SqlBaseInterface, SqlWhereInter
         return $this;
     }
 
+    /**
+     * @param array $columns
+     * @return $this|object
+     */
     public function select($columns = array("*"))
     {
         if (is_array($columns)) {

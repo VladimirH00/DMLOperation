@@ -1,5 +1,10 @@
 <?php
 namespace VladimirH00\SqlDml;
+/**
+ * Интерфейс задающий  лимит для запроса
+ * Interface SqlLimitableInterface
+ * @package VladimirH00\SqlDml
+ */
 
 interface SqlLimitableInterface
 {

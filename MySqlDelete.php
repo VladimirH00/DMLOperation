@@ -13,15 +13,22 @@ use VladimirH00\SqlDml\SqlWhereInterface as SqlWhereInterface;
 
 use InvalidArgumentException;
 
+/**
+ * Класс для составления Delete запроса к MySql
+ * Class MySqlDelete
+ * @package VladimirH00\SqlDml
+ */
+
 class MySqlDelete implements SqlBaseInterface, SqlWhereInterface
 {
+
     use WhereTrait;
     /**
-     * @var string
+     * @var string -содержит название таблицы
      */
     private $table;
     /**
-     * @var string
+     * @var string - содержит определенные параметры для удаления данных
      */
     private $where;
 
