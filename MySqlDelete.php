@@ -18,7 +18,6 @@ use InvalidArgumentException;
  * Class MySqlDelete
  * @package VladimirH00\SqlDml
  */
-
 class MySqlDelete implements SqlBaseInterface, SqlWhereInterface
 {
 

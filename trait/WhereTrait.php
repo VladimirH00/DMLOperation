@@ -17,13 +17,13 @@ trait WhereTrait
         $len = count($condition[2]);
         $str = "";
         if ($condition[0] == "IN" || $condition[0] == "NOT IN") {
-            $str .= "{$condition[1]} {$condition[0]} ( ";
+            $str .= "`{$condition[1][0]}`.`{$condition[1][1]}` {$condition[0]} ( ";
             foreach ($condition[2] as $value) {
                 $str .= "{$value}" . (++$index == $len ? "" : ",");
             }
             $str .= ")";
         } else {
-            $str = "{$condition[1]} {$condition[0]} {$condition[2]}";
+            $str = "`{$condition[1][0]}.`{$condition[1][1]}` {$condition[0]} {$condition[2]}";
         }
         return $str;
     }

@@ -39,7 +39,7 @@ class MySqlInsert implements SqlBaseInterface, SqlInsertInterface
                     $index = 0;
                     $len = count($value);
                     foreach ($value as $column) {
-                        $str .= $column . (++$index == $len ? "" : ",");
+                        $str .= "`{$column}`" . (++$index == $len ? "" : ",");
                     }
                     $this->table = "`{$item}` ({$str})";
                 } else {
@@ -76,7 +76,7 @@ class MySqlInsert implements SqlBaseInterface, SqlInsertInterface
                 $idxVl = 0;
                 $lenVl = count($column);
                 foreach ($column as $value) {
-                    $str .= $value . (++$idxVl == $lenVl ? "" : ",");
+                    $str .= "{$value}" . (++$idxVl == $lenVl ? "" : ",");
                 }
                 $this->values .= "({$str})" . (++$idxClm == $lenClm ? "" : ",");
             }

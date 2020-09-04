@@ -38,12 +38,22 @@ class MySqlUpdate implements SqlUpdateInterface, SqlBaseInterface, SqlWhereInter
     /**
      * @inheritDoc
      */
-    public function from($table)
+    public function from($tables)
     {
-        if (is_array($table)) {
-            $this->table = $table[0];
+        if (is_array($tables)) {
+            $index = 0;
+            $len = count($tables);
+            foreach ($tables as $table) {
+                if (is_array($table)) {
+                    foreach ($table as $item => $value) {
+                        $this->table .= "`{$item}`.`{$value}`" . (++$index == $len ? "" : ",");
+                    }
+                } else {
+                    $this->table .= "`{$table}`" . (++$index == $len ? "" : ",");
+                }
+            }
         } else {
-            $this->table = $table;
+            $this->table = $tables;
         }
         return $this;
     }
@@ -67,8 +77,8 @@ class MySqlUpdate implements SqlUpdateInterface, SqlBaseInterface, SqlWhereInter
         if (is_array($columns)) {
             $index = 0;
             $len = count($columns);
-            foreach ($columns as $item => $value) {
-                $this->set .= "{$item} = $value" . (++$index == $len ? "" : ",");
+            foreach ($columns as $value) {
+                $this->set .= "`{$value[0]}`.`$value[1]` = {$value[2]}" . (++$index == $len ? "" : ",");
             }
         } else {
             $this->set = $columns;

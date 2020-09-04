@@ -102,18 +102,18 @@ class MySqlSelect implements SqlSelectInterface, SqlBaseInterface, SqlWhereInter
      * @param array $columns
      * @return $this|object
      */
-    public function select($columns = array("*"))
+    public function select($columns = "*")
     {
         if (is_array($columns)) {
             $idx = 0;
             $len = count($columns);
-            foreach ($columns as $column) {
-                if (is_array($column)) {
-                    foreach ($column as $item => $value) {
-                        $this->select .= "{$item} as {$value}";
+            foreach ($columns as $column => $value) {
+                if (is_array($value)) {
+                    foreach ($value as $id => $item) {
+                        $this->select .= "`{$column}`.`{$id}` as `{$item}`";
                     }
                 } else {
-                    $this->select .= $column;
+                    $this->select .= "`{$column}`.`{$value}`";
                 }
                 $this->select .= (++$idx == $len ? "" : ",");
             }
@@ -157,14 +157,32 @@ class MySqlSelect implements SqlSelectInterface, SqlBaseInterface, SqlWhereInter
     /**
      * @inheritDoc
      */
-    public function from($table)
+    public function from($tables)
     {
-        if (is_array($table)) {
-            foreach ($table as $item => $value) {
-                $this->from = "`{$item}` as `{$value}`";
+        if (is_array($tables)) {
+            if (count($tables) == 2) {
+                $table1 = $tables[0][0];
+                $table2 = $tables[0][1];
+                $operand = $tables[1][0];
+                $row1 = $tables[1][1];
+                $row2 = $tables[1][2];
+                $this->from = "`{$table1}` {$operand} `{$table2}` ON `{$table1}`.`{$row1}` = `{$table2}`.`{$row2}`";
+            } else {
+                foreach ($tables as $table) {
+                    $index = 0;
+                    $len = count($table);
+                    if (is_array($table)) {
+                        foreach ($table as $item => $value) {
+                            $this->from .= "`{$item}` as `{$value}`" . ($index == $len ? "" : ",");
+                        }
+                    } else {
+                        $this->from .= $table . ($index == $len ? "" : ",");
+                    }
+
+                }
             }
         } else {
-            $this->from = $table;
+            $this->from = $tables;
         }
         return $this;
     }

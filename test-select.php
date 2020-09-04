@@ -4,22 +4,24 @@ require_once "MySqlSelect.php";
 
 use VladimirH00\SqlDml\MySqlSelect as MySqlSelect;
 
-
-$pdo = new PDO('mysql:host = localhost; dbname=' . "my_db", "mysql",
-    "mysql",
-    [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
-
 $query = (new MySqlSelect())
     ->select(array(
-        'id_person',
+        "table"=>'id_person',"table2"=>
         array("CONCAT(first_name, second_name)" => "full_name")
     ))
-    ->from('`person`')->andWhere(array(">", "id_person", "100"))
-    ->orWhere(array('=', 'first_name', "1"))
+    ->from(array("table1", array("table2"=>"t2"),"table3"))->andWhere(array(">", "id_person", "100"))
+    ->orWhere(array('=', array("table","age"), "1"))
     ->limit(10)->orderBy(array("id_type_doc"))->offset(2);
 
 
-//$query_text = $pdo->query($query->getRaw());
-//print_r($query_text->fetchAll());
-//echo "<br>";
+
+echo $query->getRaw();
+echo "<br>";
+
+$query = (new MySqlSelect())
+    ->select()
+    ->from(array(array("table1","table2"),array("LEFT JOIN", "pole1","pole2")))
+    ->andWhere(array(">", array("table","anyPole"), "100"))
+    ->orWhere(array('=', array("table2", "anyPole2"), "1"))
+    ->limit(10)->orderBy(array("id_type_doc"))->offset(2);
 echo $query->getRaw();
