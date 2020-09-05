@@ -49,7 +49,7 @@ class MySqlUpdate implements SqlUpdateInterface, SqlBaseInterface, SqlWhereInter
                         $this->table .= "`{$item}`.`{$value}`" . (++$index == $len ? "" : ",");
                     }
                 } else {
-                    $this->table .= "`{$table}`" . (++$index == $len ? "" : ",");
+                     $this->table .= "`{$table}`" . (++$index == $len ? "" : ",");
                 }
             }
         } else {
