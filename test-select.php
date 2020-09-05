@@ -25,3 +25,14 @@ $query = (new MySqlSelect())
     ->orWhere(array('=', array("table2", "anyPole2"), "1"))
     ->limit(10)->orderBy(array("id_type_doc"))->offset(2);
 echo $query->getRaw();
+
+
+echo "<br>";
+
+$query = (new MySqlSelect())
+    ->select(array("table1"=>array("pole1"=>"P1")))
+    ->from("`table1` as `t1`")
+    ->andWhere(array(">", array("table","anyPole"), "100"))
+    ->orWhere(array('=', array("table2", "anyPole2"), "1"))
+    ->limit(10)->orderBy(array("id_type_doc"))->offset(2);
+echo $query->getRaw();

@@ -41,9 +41,9 @@ class MySqlInsert implements SqlBaseInterface, SqlInsertInterface
                     foreach ($value as $column) {
                         $str .= "`{$column}`" . (++$index == $len ? "" : ",");
                     }
-                    $this->table = "`{$item}` ({$str})";
+                    $this->table .= "({$str})";
                 } else {
-                    $this->table = "`{$value}`";
+                    $this->table .= "`{$value}`";
                 }
             }
         } else {

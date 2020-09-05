@@ -34,12 +34,22 @@ class MySqlDelete implements SqlBaseInterface, SqlWhereInterface
     /**
      * @inheritDoc
      */
-    public function from($table)
+    public function from($tables)
     {
-        if (is_array($table)) {
-            $this->table = "`{$table[0]}`";
+        if (is_array($tables)) {
+            $index = 0;
+            $len = count($tables);
+            foreach ($tables as $table) {
+                if (is_array($table)) {
+                    foreach ($table as $item => $value) {
+                        $this->table .= "`{$item}` as `{$value}`" . (++$index == $len ? "" : ",");
+                    }
+                } else {
+                    $this->table .= $table . (++$index == $len ? "" : ",");
+                }
+            }
         } else {
-            $this->table = $table;
+            $this->table = $tables;
         }
         return $this;
     }

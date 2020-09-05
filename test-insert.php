@@ -10,8 +10,13 @@ $query = (new MySqlInsert())->from("`table`")->values(array(array("'hello'", "wo
 echo $query->getRaw();
 echo "<br>";
 
-$query = (new MySqlInsert())->from(array("name", array("123", "456")))
+$query = (new MySqlInsert())->from(array("table_name", array("123", "456")))
     ->values(array(array("hello", "world")));
 
+echo $query->getRaw();
+echo "<br>";
+
+$query = (new MySqlInsert())->from(array("table_name", array("123", "456")))
+    ->values(array(array("hello", "world"), array("world", "hello")));
 echo $query->getRaw();
 echo "<br>";
