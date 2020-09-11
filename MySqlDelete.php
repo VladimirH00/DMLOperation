@@ -1,14 +1,14 @@
 <?php
 
 
-namespace VladimirH00\SqlDml;
+namespace VladimirH00\DMLOperation;
 
-require_once "./trait/WhereTrait.php";
-require_once "./interface/SqlWhereInterface.php";
-require_once "./interface/SqlBaseInterface.php";
 
-use VladimirH00\SqlDml\SqlBaseInterface as SqlBaseInterface;
-use VladimirH00\SqlDml\SqlWhereInterface as SqlWhereInterface;
+require_once "AbstractWhere.php";
+require_once "./interfaces/SqlBaseInterface.php";
+
+use VladimirH00\DMLOperation\interfaces\SqlBaseInterface as SqlBaseInterface;
+use VladimirH00\DMLOperation\AbstractWhere as AbstractWhere;
 
 
 use InvalidArgumentException;
@@ -18,18 +18,14 @@ use InvalidArgumentException;
  * Class MySqlDelete
  * @package VladimirH00\SqlDml
  */
-class MySqlDelete implements SqlBaseInterface, SqlWhereInterface
+class MySqlDelete extends AbstractWhere implements SqlBaseInterface
 {
 
-    use WhereTrait;
+
     /**
      * @var string -содержит название таблицы
      */
     private $table;
-    /**
-     * @var string - содержит определенные параметры для удаления данных
-     */
-    private $where;
 
     /**
      * @inheritDoc

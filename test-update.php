@@ -4,7 +4,7 @@
 require_once "MySqlUpdate.php";
 
 
-use VladimirH00\SqlDml\MySqlUpdate as MySqlUpdate;
+use VladimirH00\DMLOperation\MySqlUpdate as MySqlUpdate;
 
 
 $query = (new MySqlUpdate())->from(array("table"))

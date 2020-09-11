@@ -2,21 +2,19 @@
 
 require_once "MySqlInsert.php";
 
-use VladimirH00\SqlDml\MySqlInsert as MySqlInsert;
+use VladimirH00\DMLOperation\MySqlInsert as MySqlInsert;
 
 
-$query = (new MySqlInsert())->from("`table`")->values(array(array("'hello'", "world")));
-
-echo $query->getRaw();
-echo "<br>";
-
-$query = (new MySqlInsert())->from(array("table_name", array("123", "456")))
-    ->values(array(array("hello", "world")));
+$query = (new MySqlInsert())->insert(array(array("hello", "world"), array("world", "hello")),array("table1"=>"T1"));
 
 echo $query->getRaw();
 echo "<br>";
 
-$query = (new MySqlInsert())->from(array("table_name", array("123", "456")))
-    ->values(array(array("hello", "world"), array("world", "hello")));
+$query = (new MySqlInsert())->insert(array(array("one", "insert")),"`table1`");
+
+echo $query->getRaw();
+echo "<br>";
+
+$query = (new MySqlInsert())->insert("(column1, column2)",array("table1"=>"T1"));
 echo $query->getRaw();
 echo "<br>";

@@ -1,6 +1,6 @@
 <?php
 
-namespace VladimirH00\SqlDml;
+namespace VladimirH00\DMLOperation\interfaces;
 /**
  * Интерфейс для формирования Insert запросов
  * Interface SqlInsertInterface
@@ -12,5 +12,11 @@ interface SqlInsertInterface
      * @params array|string $columns
      * @return object $this
      */
-    public function values($columns);
+    public function insert($columns, $table);
+
+    /**
+     * @return string
+     */
+    public function getRaw();
+
 }

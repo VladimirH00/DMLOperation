@@ -1,6 +1,6 @@
 <?php
 
-namespace VladimirH00\SqlDml;
+namespace VladimirH00\DMLOperation\interfaces;
 
 /**
  * Интерфейс с общими методами запросов к SQL

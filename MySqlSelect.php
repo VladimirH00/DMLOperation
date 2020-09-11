@@ -1,20 +1,19 @@
 <?php
 
 
-namespace VladimirH00\SqlDml;
+namespace VladimirH00\DMLOperation;
 
-require_once "./interface/SqlBaseInterface.php";
-require_once "./interface/SqlSelectInterface.php";
-require_once "./interface/SqlWhereInterface.php";
-require_once "./interface/SqlLimitableInterface.php";
-require_once "./interface/SqlOffsetableInterface.php";
-require_once "./trait/WhereTrait.php";
+require_once "./interfaces/SqlBaseInterface.php";
+require_once "./interfaces/SqlSelectInterface.php";
+require_once "./interfaces/SqlLimitableInterface.php";
+require_once "./interfaces/SqlOffsetableInterface.php";
+require_once "AbstractWhere.php";
 
-use VladimirH00\SqlDml\SqlWhereInterface as SqlWhereInterface;
-use VladimirH00\SqlDml\SqlSelectInterface as SqlSelectInterface;
-use VladimirH00\SqlDml\SqlBaseInterface as SqlBaseInterface;
-use VladimirH00\SqlDml\SqlLimitableInterface as SqlLimitableInterface;
-use VladimirH00\SqlDml\SqlOffsetableInterface as SqlOffsetableInterface;
+use VladimirH00\DMLOperation\AbstractWhere as AbstractWhere;
+use VladimirH00\DMLOperation\interfaces\SqlSelectInterface as SqlSelectInterface;
+use VladimirH00\DMLOperation\interfaces\SqlBaseInterface as SqlBaseInterface;
+use VladimirH00\DMLOperation\interfaces\SqlLimitableInterface as SqlLimitableInterface;
+use VladimirH00\DMLOperation\interfaces\SqlOffsetableInterface as SqlOffsetableInterface;
 
 
 use InvalidArgumentException;
@@ -25,49 +24,53 @@ use InvalidArgumentException;
  * Class MySqlSelect
  * @package VladimirH00\SqlDml
  */
-class MySqlSelect implements SqlSelectInterface, SqlBaseInterface, SqlWhereInterface, SqlLimitableInterface, SqlOffsetableInterface
+class MySqlSelect extends AbstractWhere implements SqlSelectInterface, SqlBaseInterface, SqlLimitableInterface, SqlOffsetableInterface
 {
-    use WhereTrait;
     /**
      * @var string содержит поля выборки
      */
     private $select;
+
     /**
      * @var int - содержит количество выводимых данных
      */
     private $limit;
+
     /**
      * @var string - содержит название таблицы
      */
     private $from;
-    /**
-     * @var string - содержит  строку ограничений по выборке данных
-     */
-    private $where;
+
     /**
      * @var int - содержит сдвиг по выводымим данным
      */
     private $offset;
+
     /**
      * @var string - содержит параметры сордировки запроса
      */
     private $orderBy;
+
     /**
      * @var string - содержит параметры группировки данных запроса
      */
     private $groupBy;
+    /**
+     * @var string
+     */
+    private $join;
 
     /**
      * @param $columns
      * @return string
      */
-    private function By($columns)
+    private function by($columns)
     {
         $str = "";
         $index = 0;
         $len = count($columns);
         foreach ($columns as $column) {
-            $str .= $column . (++$index == $len ? "" : ",");
+            $str .= "`{$column}`" . (++$index == $len ? "" : ",");
         }
         return $str;
     }
@@ -135,7 +138,7 @@ class MySqlSelect implements SqlSelectInterface, SqlBaseInterface, SqlWhereInter
             throw new InvalidArgumentException("The passed array cannot be empty.");
         }
 
-        $this->orderBy = $this->By($columns);
+        $this->orderBy = $this->by($columns);
         return $this;
     }
 
@@ -150,7 +153,7 @@ class MySqlSelect implements SqlSelectInterface, SqlBaseInterface, SqlWhereInter
         if (empty($columns)) {
             throw new InvalidArgumentException("The passed array cannot be empty.");
         }
-        $this->groupBy = $this->By($columns);
+        $this->groupBy = $this->by($columns);
         return $this;
     }
 
@@ -160,25 +163,15 @@ class MySqlSelect implements SqlSelectInterface, SqlBaseInterface, SqlWhereInter
     public function from($tables)
     {
         if (is_array($tables)) {
-            if (count($tables) == 2) {
-                $table1 = $tables[0][0];
-                $table2 = $tables[0][1];
-                $operand = $tables[1][0];
-                $row1 = $tables[1][1];
-                $row2 = $tables[1][2];
-                $this->from = "`{$table1}` {$operand} `{$table2}` ON `{$table1}`.`{$row1}` = `{$table2}`.`{$row2}`";
-            } else {
-                foreach ($tables as $table) {
-                    $index = 0;
-                    $len = count($table);
-                    if (is_array($table)) {
-                        foreach ($table as $item => $value) {
-                            $this->from .= "`{$item}` as `{$value}`" . ($index == $len ? "" : ",");
-                        }
-                    } else {
-                        $this->from .= $table . ($index == $len ? "" : ",");
+            foreach ($tables as $table) {
+                $index = 0;
+                $len = count($table);
+                if (is_array($table)) {
+                    foreach ($table as $item => $value) {
+                        $this->from .= "`{$item}` as `{$value}`" . (++$index == $len ? "" : ",");
                     }
-
+                } else {
+                    $this->from .= "`{$table}`" . (++$index == $len ? "" : ",");
                 }
             }
         } else {
@@ -196,6 +189,9 @@ class MySqlSelect implements SqlSelectInterface, SqlBaseInterface, SqlWhereInter
             throw new InvalidArgumentException("All the necessary data was not transmitted.");
         }
         $query = "SELECT {$this->select} FROM {$this->from}";
+        if (!empty($this->join)){
+            $query .= " {$this->join}";
+        }
         if (!empty($this->where)) {
             $query .= " WHERE {$this->where}";
         }
@@ -213,43 +209,20 @@ class MySqlSelect implements SqlSelectInterface, SqlBaseInterface, SqlWhereInter
         }
         return $query;
     }
-
-    /**
-     * @inheritDoc
-     */
-    public function andWhere($condition)
+    public function join($columns)
     {
-        if (!is_array($condition)) {
-            throw new InvalidArgumentException("Condition is not an array.");
+
+        if(is_array($columns)){
+            if(is_null($this->from)){
+                throw new InvalidArgumentException("Property 'From' is empty.");
+            }
+            $this->join .= " {$columns[0]} `{$columns[1]}` ON {$this->from}.`{$columns[2]}` = `{$columns[1]}`.`{$columns[3]}`";
+        }else{
+            $this->join = $columns;
         }
-        if (empty($condition)) {
-            throw new InvalidArgumentException("The passed array cannot be empty.");
-        }
-        if (!is_null($this->where)) {
-            $this->where .= " AND ";
-        }
-        $this->where .= $this->where($condition);
 
         return $this;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function orWhere($condition)
-    {
-        if (!is_array($condition)) {
-            throw new InvalidArgumentException("Condition is not an array.");
-        }
-        if (empty($condition)) {
-            throw new InvalidArgumentException("The passed array cannot be empty.");
-        }
-        if (!is_null($this->where)) {
-            $this->where .= " OR ";
-        }
-        $this->where .= $this->where($condition);
-
-        return $this;
-    }
 
 }

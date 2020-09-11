@@ -1,17 +1,17 @@
 <?php
 
 
-namespace VladimirH00\SqlDml;
+namespace VladimirH00\DMLOperation;
 
 
-require_once "./interface/SqlBaseInterface.php";
-require_once "./interface/SqlUpdateInterface.php";
-require_once "./interface/SqlWhereInterface.php";
-require_once "./trait/WhereTrait.php";
+require_once "./interfaces/SqlBaseInterface.php";
+require_once "./interfaces/SqlUpdateInterface.php";
+require_once "AbstractWhere.php";
 
-use VladimirH00\SqlDml\SqlBaseInterface as SqlBaseInterface;
-use VladimirH00\SqlDml\SqlWhereInterface as SqlWhereInterface;
-use VladimirH00\SqlDml\SqlUpdateInterface as SqlUpdateInterface;
+
+use VladimirH00\DMLOperation\interfaces\SqlBaseInterface as SqlBaseInterface;
+use VladimirH00\DMLOperation\AbstractWhere as AbstractWhere;
+use VladimirH00\DMLOperation\interfaces\SqlUpdateInterface as SqlUpdateInterface;
 use InvalidArgumentException;
 
 /**
@@ -19,17 +19,14 @@ use InvalidArgumentException;
  * Class MySqlUpdate
  * @package VladimirH00\SqlDml
  */
-class MySqlUpdate implements SqlUpdateInterface, SqlBaseInterface, SqlWhereInterface
+class MySqlUpdate extends AbstractWhere implements SqlUpdateInterface, SqlBaseInterface
 {
-    use WhereTrait;
+
     /**
      * @var string - содержит название таблицы
      */
     private $table;
-    /**
-     * @var string - содержит ограничения по обновлению данных
-     */
-    private $where;
+
     /**
      * @var string - содержит строку замены старых данных на новые
      */
@@ -86,41 +83,4 @@ class MySqlUpdate implements SqlUpdateInterface, SqlBaseInterface, SqlWhereInter
         return $this;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function andWhere($condition)
-    {
-        if (!is_array($condition)) {
-            throw new InvalidArgumentException("Condition is not an array.");
-        }
-        if (empty($condition)) {
-            throw new InvalidArgumentException("The passed array cannot be empty.");
-        }
-        if (!is_null($this->where)) {
-            $this->where .= " AND ";
-        }
-        $this->where = $this->where($condition);
-
-        return $this;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function orWhere($condition)
-    {
-        if (!is_array($condition)) {
-            throw new InvalidArgumentException("Condition is not an array.");
-        }
-        if (empty($condition)) {
-            throw new InvalidArgumentException("The passed array cannot be empty.");
-        }
-        if (!is_null($this->where)) {
-            $this->where .= " OR ";
-        }
-        $this->where = $this->where($condition);
-
-        return $this;
-    }
 }

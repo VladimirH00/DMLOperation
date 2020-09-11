@@ -1,6 +1,6 @@
 <?php
 
-namespace VladimirH00\SqlDml;
+namespace VladimirH00\DMLOperation\interfaces;
 
 /** Интерфейс с дополнительным методом для Update запроса
  * Interface SqlUpdateInterface
