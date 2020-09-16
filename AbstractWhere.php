@@ -21,6 +21,12 @@ abstract class AbstractWhere implements SqlWhereInterface
      */
     public function where($condition)
     {
+        if (!is_array($condition)) {
+            throw new InvalidArgumentException("Condition is not an array.");
+        }
+        if (empty($condition)) {
+            throw new InvalidArgumentException("The passed array cannot be empty.");
+        }
         $condition[0] = strtoupper($condition[0]);
         $index = 0;
         $len = count($condition[2]);
@@ -43,6 +49,7 @@ abstract class AbstractWhere implements SqlWhereInterface
      */
     public function andWhere($condition)
     {
+
         if (!is_array($condition)) {
             throw new InvalidArgumentException("Condition is not an array.");
         }

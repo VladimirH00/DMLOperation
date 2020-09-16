@@ -66,41 +66,5 @@ class MySqlDelete extends AbstractWhere implements SqlBaseInterface
         }
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function andWhere($condition)
-    {
-        if (!is_array($condition)) {
-            throw new InvalidArgumentException("Condition is not an array.");
-        }
-        if (empty($condition)) {
-            throw new InvalidArgumentException("The passed array cannot be empty.");
-        }
-        if (!is_null($this->where)) {
-            $this->where .= " AND ";
-        }
-        $this->where .= $this->where($condition);
 
-        return $this;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function orWhere($condition)
-    {
-        if (!is_array($condition)) {
-            throw new InvalidArgumentException("Condition is not an array.");
-        }
-        if (empty($condition)) {
-            throw new InvalidArgumentException("The passed array cannot be empty.");
-        }
-        if (!is_null($this->where)) {
-            $this->where .= " OR ";
-        }
-        $this->where .= $this->where($condition);
-
-        return $this;
-    }
 }
