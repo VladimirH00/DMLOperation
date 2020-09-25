@@ -36,13 +36,7 @@ class MySqlDelete extends AbstractWhere implements SqlBaseInterface
             $index = 0;
             $len = count($tables);
             foreach ($tables as $table) {
-                if (is_array($table)) {
-                    foreach ($table as $item => $value) {
-                        $this->table .= "`{$item}` as `{$value}`" . (++$index == $len ? "" : ",");
-                    }
-                } else {
-                    $this->table .= $table . (++$index == $len ? "" : ",");
-                }
+                $this->table .= $table . (++$index == $len ? "" : ",");
             }
         } else {
             $this->table = $tables;

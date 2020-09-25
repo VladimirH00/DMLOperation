@@ -27,6 +27,8 @@ interface SqlSelectInterface
      */
     public function groupBy($columns);
 
-    public function join($columns);
+    public function leftJoin($table1, $values);
+    public function innerJoin($table1, $values);
+    public function rightJoin($table1, $values);
 
 }

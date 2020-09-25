@@ -38,16 +38,11 @@ class MySqlUpdate extends AbstractWhere implements SqlUpdateInterface, SqlBaseIn
     public function from($tables)
     {
         if (is_array($tables)) {
+            $this->table ="";
             $index = 0;
             $len = count($tables);
-            foreach ($tables as $table) {
-                if (is_array($table)) {
-                    foreach ($table as $item => $value) {
-                        $this->table .= "`{$item}`.`{$value}`" . (++$index == $len ? "" : ",");
-                    }
-                } else {
-                     $this->table .= "`{$table}`" . (++$index == $len ? "" : ",");
-                }
+            foreach ($tables as $table=>$value) {
+                $this->table .= "`{$table}` as $value" . (++$index == $len ? "" : ",");
             }
         } else {
             $this->table = $tables;
@@ -75,7 +70,7 @@ class MySqlUpdate extends AbstractWhere implements SqlUpdateInterface, SqlBaseIn
             $index = 0;
             $len = count($columns);
             foreach ($columns as $value) {
-                $this->set .= "`{$value[0]}`.`$value[1]` = {$value[2]}" . (++$index == $len ? "" : ",");
+                $this->set .= "`{$value[0]}` = {$value[1]}" . (++$index == $len ? "" : ",");
             }
         } else {
             $this->set = $columns;

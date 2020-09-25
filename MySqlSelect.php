@@ -108,16 +108,11 @@ class MySqlSelect extends AbstractWhere implements SqlSelectInterface, SqlBaseIn
     public function select($columns = "*")
     {
         if (is_array($columns)) {
+            $this->select ="";
             $idx = 0;
             $len = count($columns);
             foreach ($columns as $column => $value) {
-                if (is_array($value)) {
-                    foreach ($value as $id => $item) {
-                        $this->select .= "`{$column}`.`{$id}` as `{$item}`";
-                    }
-                } else {
-                    $this->select .= "`{$column}`.`{$value}`";
-                }
+                $this->select .= $value;
                 $this->select .= (++$idx == $len ? "" : ",");
             }
         } else {
@@ -163,16 +158,10 @@ class MySqlSelect extends AbstractWhere implements SqlSelectInterface, SqlBaseIn
     public function from($tables)
     {
         if (is_array($tables)) {
-            foreach ($tables as $table) {
-                $index = 0;
-                $len = count($table);
-                if (is_array($table)) {
-                    foreach ($table as $item => $value) {
-                        $this->from .= "`{$item}` as `{$value}`" . (++$index == $len ? "" : ",");
-                    }
-                } else {
-                    $this->from .= "`{$table}`" . (++$index == $len ? "" : ",");
-                }
+            $index = 0;
+            $len = count($tables);
+            foreach ($tables as $item => $value) {
+                $this->from .= "`{$item}` as `{$value}`" . (++$index == $len ? "" : ",");
             }
         } else {
             $this->from = $tables;
@@ -209,16 +198,59 @@ class MySqlSelect extends AbstractWhere implements SqlSelectInterface, SqlBaseIn
         }
         return $query;
     }
-    public function join($columns)
+    public function leftJoin($table1, $values)
     {
 
-        if(is_array($columns)){
-            if(is_null($this->from)){
-                throw new InvalidArgumentException("Property 'From' is empty.");
+        if(!is_array($values)) {
+            throw new InvalidArgumentException("Second arguments is not array.");
+        }
+        if(is_array($table1)){
+            foreach ($table1 as $item => $value){
+                $this->join = " LEFT JOIN {$item} as {$value} ";
             }
-            $this->join .= " {$columns[0]} `{$columns[1]}` ON {$this->from}.`{$columns[2]}` = `{$columns[1]}`.`{$columns[3]}`";
         }else{
-            $this->join = $columns;
+            $this->join = " LEFT JOIN {$table1}";
+        }
+        foreach ($values as $item => $value){
+            $this->join .= " ON `{$item}` = {$value}`";
+        }
+
+        return $this;
+    }
+    public function innerJoin($table1, $values)
+    {
+
+        if(!is_array($values)) {
+            throw new InvalidArgumentException("Second arguments is not array.");
+        }
+        if(is_array($table1)){
+            foreach ($table1 as $item => $value){
+                $this->join = " INNER JOIN {$item} as {$value} ";
+            }
+        }else{
+            $this->join = " LEFT JOIN {$table1}";
+        }
+        foreach ($values as $item => $value){
+            $this->join .= " ON `{$item}` = {$value}`";
+        }
+
+        return $this;
+    }
+    public function rightJoin($table1, $values)
+    {
+
+        if(!is_array($values)) {
+            throw new InvalidArgumentException("Second arguments is not array.");
+        }
+        if(is_array($table1)){
+            foreach ($table1 as $item => $value){
+                $this->join = " RIGHT JOIN {$item} as {$value} ";
+            }
+        }else{
+            $this->join = " LEFT JOIN {$table1}";
+        }
+        foreach ($values as $item => $value){
+            $this->join .= " ON `{$item}` = {$value}`";
         }
 
         return $this;
