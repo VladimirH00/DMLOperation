@@ -228,7 +228,7 @@ class MySqlSelect extends AbstractWhere implements SqlSelectInterface, SqlBaseIn
                 $this->join = " INNER JOIN {$item} as {$value} ";
             }
         }else{
-            $this->join = " LEFT JOIN {$table1}";
+            $this->join = " INNER JOIN {$table1}";
         }
         foreach ($values as $item => $value){
             $this->join .= " ON `{$item}` = {$value}`";
@@ -247,7 +247,7 @@ class MySqlSelect extends AbstractWhere implements SqlSelectInterface, SqlBaseIn
                 $this->join = " RIGHT JOIN {$item} as {$value} ";
             }
         }else{
-            $this->join = " LEFT JOIN {$table1}";
+            $this->join = " RIGHT JOIN {$table1}";
         }
         foreach ($values as $item => $value){
             $this->join .= " ON `{$item}` = {$value}`";
